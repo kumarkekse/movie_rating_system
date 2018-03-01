@@ -1,0 +1,90 @@
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3>
+      <%= @movie.dvd_title%>
+    </h3>
+  </div>
+  <div class="panel-body">
+    <div class="col-md-12">
+      <h3>&nbsp;&nbsp;&nbsp;&nbsp; Comments </h3>
+      <% @movie.reviews.each do |review|%>
+        <div class="detailBox col-md-6">
+          <div class="titleBox">
+            <div class="commentBox">
+              <p class="taskDescription">
+                <%#= review.rating %>
+                <%= review.comment %>
+                <span class="date sub-text pull-right"><%= review.user.email %></span>
+              </p>
+              <div class="review-block">
+                <%if review.rating == 0 %>
+                  <h3> No rating point </h3>
+                <%else%>
+                  <% (1..review.rating.to_i).each do |val|%>
+                    <button type="button" class="btn btn-warning btn-xs" aria-label="Left Align" data-rating="<%= val%>">
+                      <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
+                    </button>
+                  <% end %>
+                  <% (review.rating.to_i+1..10).each do |val|%>
+                    <button type="button" class="btn btn-default btn-grey btn-xs" aria-label="Left Align" data-rating="<%= val%>">
+                      <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
+                    </button>
+                  <% end %>
+                <%end%>
+              </div>
+            </div>
+          </div>
+          <div class="actionBox">
+            <ul class="commentList">
+              <% review.replies.each do |reply| %>
+                <li>
+                  <%= reply.rating %>
+                  <div class="commentText">
+                    <h4><%= reply.comment %></h4>
+                  </div>
+                  <span class="date sub-text"><%= reply.user.email %></span>
+                </li>
+              <% end %>
+            </ul>
+            <% if review.can_reply? current_user %>
+              <%= form_for Review.new, url: replies_review_path(review), html:  {class: 'form-inline'} do |f| %>
+                  <%= f.hidden_field :movie_id, value: @movie.id %>
+                <div class="form-group">
+                  <%= f.text_field :comment, class: 'form-control input-comment' %>
+                </div>
+                <div class="form-group">
+                  <%= f.submit "Reply", class: "btn btn-default" %>
+                </div>
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+      <%end%>
+    </div>
+    <div class="detailBox row">
+      <div class="titleBox">
+        <h4> Add Comment </h4>
+      </div>
+      <div class="actionBox">
+        <div class="review-block">
+          <% (1..10).each do |val|%>
+            <button type="button" class="btn btn-warning btn-xs start" aria-label="Left Align" data-rating="<%= val%>">
+              <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
+            </button>
+          <% end %>
+        </div>
+        <br>
+        <%= form_for Review.new, html:  {class: 'form-inline'} do |f| %>
+          <%= f.hidden_field :movie_id, value: @movie.id %>
+          <%= f.hidden_field :rating, value: 0 %>
+          <div class="form-group">
+            <%= f.text_field :comment, class: 'form-control input-comment' %>
+          </div>
+          <div class="form-group">
+            <%= f.submit "Post", class: "btn btn-default" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

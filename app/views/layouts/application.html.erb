@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>MovieRatingSystem</title>
+    <%= csrf_meta_tags %>
+
+    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+  </head>
+
+  <body>
+    <div class="navbar navbar-default">
+      <% if user_signed_in? %>
+        <%= link_to 'Movies', movies_path, class: "navbar-brand" %>
+      <% end %>
+      <ul class="nav navbar-nav">
+        <% if user_signed_in? %>
+          <li>
+            <a href="#"><%= current_user.email %>
+             </a>
+          </li>
+          <li>
+            <%= link_to destroy_user_session_path, method: :delete do %>
+              <span class="glyphicon glyphicon-log-out"></span>Log Out
+            <% end %>
+          </li>
+        <% else %>
+          <li>
+            <%= link_to new_user_registration_path do %>
+              <span class="glyphicon glyphicon-user"></span> Sign Up
+            <% end %>
+          </li>
+          <li>
+            <%= link_to new_user_session_path do %>
+              <span class="glyphicon glyphicon-log-in"></span> Login
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+    <% if user_signed_in? %>
+      <div class="navbar navbar-default">
+        <ul class="nav navbar-nav">
+          <li>
+            <a href="#">Your Location: (<%= current_user.address %>)</a>
+          </li>
+        </ul>
+      </div>
+    <% end %>
+
+    <%= yield %>
+  </body>
+</html>
